@@ -1,0 +1,8 @@
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+note over selain:
+Requestin payloadina on uusi muistiinpano
+end note
+palvelin-->selain: 201 Created.
+note over selain:
+ selain lisää muistiinpanon listaan DOM-puuta muokaten
+end note
