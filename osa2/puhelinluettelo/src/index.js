@@ -1,13 +1,54 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
+import axios from 'axios'
+
+const Filter = ({ filter, changeHandler }) => (
+    <div>
+        filter shown with
+        <input
+            value={filter}
+            onChange={changeHandler} />
+    </div>
+)
+
+const AddNew = ({ handleSubmit, newName, handleNameChange, newNumber, handleNumberChange }) => (
+    <div>
+        <h2>add a new</h2>
+        <form onSubmit={handleSubmit}>
+            <div>
+                name: <input value={newName}
+                    onChange={handleNameChange} />
+            </div>
+            <div>
+                number: <input value={newNumber}
+                    onChange={handleNumberChange} />
+            </div>
+            <div>
+                <button type="submit">add</button>
+            </div>
+        </form>
+    </div>
+)
+
+const RenderPersons = ({ entriesToShow }) => (
+    <div>
+        <h2>Numbers</h2>
+        {entriesToShow.map(person =>
+            <div key={person.name}>{person.name} {person.number}</div>
+        )}
+    </div>
+)
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Ada Lovelace', number: '39-44-5323523' },
-        { name: 'Dan Abramov', number: '12-43-234345' },
-        { name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ])
+    const [persons, setPersons] = useState([])
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:3001/persons')
+            .then(response => {
+                setPersons(response.data)
+            })
+    }, [])
 
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
@@ -30,26 +71,20 @@ const App = () => {
         }
     }
 
+    const onFilterChange = event => setFilter(event.target.value)
+
     return (
         <div>
             <h1>Phonebook</h1>
-            filter shown with <input value={filter} onChange={event => setFilter(event.target.value)} />
-            <h2>add a new</h2>
-            <form onSubmit={submit}>
-                <div>
-                    name: <input value={newName}
-                        onChange={event => setNewName(event.target.value)} />
-                </div>
-                <div>
-                    number: <input value={newNumber}
-                        onChange={event => setNewNumber(event.target.value)} />
-                </div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
-            <h2>Numbers</h2>
-            {entriesToShow.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
+            <Filter filter={filter} changeHandler={onFilterChange} />
+            <AddNew
+                handleSubmit={submit}
+                newName={newName}
+                handleNameChange={event => setNewName(event.target.value)}
+                newNumber={newNumber}
+                handleNumberChange={event => setNewNumber(event.target.value)}
+            />
+            <RenderPersons entriesToShow={entriesToShow} />
         </div >
     )
 }
