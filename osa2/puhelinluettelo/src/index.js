@@ -3,6 +3,30 @@ import ReactDOM from 'react-dom'
 
 import personService from './services/persons'
 
+const Notification = ({ data }) => {
+  if (data === null) {
+    return null
+  }
+
+  const { message, color } = data
+
+  const style = {
+    color,
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  return (
+    <div style={style}>
+      {message}
+    </div>
+  )
+}
+
 const Filter = ({ filter, changeHandler }) => (
   <div>
     filter shown with
@@ -39,7 +63,7 @@ const Persons = ({ entriesToShow, deletePerson }) => (
         {person.name} {person.number}
         <button onClick={() => {
           if (window.confirm(`Delete ${person.name}`)) {
-            deletePerson(person.id)
+            deletePerson(person.id, person.name)
           }
         }}>
           delete
@@ -61,18 +85,22 @@ const App = () => {
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-
   const [filter, setFilter] = useState('')
+  const [notificationData, setNotificationData] = useState(null)
 
   const entriesToShow = filter !== '' ?
     persons.filter(p => p.name.toUpperCase().includes(
       filter.toUpperCase())) : persons
 
-  const deletePerson = id => personService
-    .deletePerson(id).then(r =>
+  const deletePerson = (id, name) => personService
+    .deletePerson(id).then(r => {
+      showNotification(`Deleted ${name}`, 'green')
       setPersons(persons.filter(p => p.id !== id))
+      setNewName('')
+      setNewNumber('')
+    }).catch(error =>
+      showNotification(`Failed to delete ${name}`, 'red')
     )
-
 
   const submit = event => {
     event.preventDefault()
@@ -83,18 +111,33 @@ const App = () => {
     if (oldPerson) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const updateObject = { ...oldPerson, number: newNumber }
-        personService.update(oldPerson.id, updateObject).then(r =>
+        personService.update(oldPerson.id, updateObject).then(r => {
+          showNotification(`Updated ${updateObject.name}`, 'green')
           setPersons(persons.map(p => p.id !== oldPerson.id ? p : updateObject))
+          setNewName('')
+          setNewNumber('')
+        }).catch(error =>
+          showNotification(`Failed to update ${oldPerson.name}`, 'red')
         )
       }
     } else {
       personService.create(newObject)
         .then(data => {
+          showNotification(`Added ${newObject.name}`, 'green')
           setPersons(persons.concat(data))
           setNewName('')
           setNewNumber('')
-        })
+        }).catch(error =>
+          showNotification(`Failed to create ${newObject.name}`, 'red')
+        )
     }
+  }
+
+  const showNotification = (message, color) => {
+    setNotificationData({ message, color })
+    setTimeout(() => {
+      setNotificationData(null)
+    }, 5000)
   }
 
   const onFilterChange = event => setFilter(event.target.value)
@@ -102,6 +145,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification data={notificationData} />
       <Filter filter={filter} changeHandler={onFilterChange} />
       <AddNew
         handleSubmit={submit}
