@@ -121,15 +121,18 @@ const App = () => {
         )
       }
     } else {
+      console.log('person service create')
       personService.create(newObject)
         .then(data => {
+          console.log('create, got data', data)
           showNotification(`Added ${newObject.name}`, 'green')
           setPersons(persons.concat(data))
           setNewName('')
           setNewNumber('')
-        }).catch(error =>
-          showNotification(`Failed to create ${newObject.name}`, 'red')
-        )
+        }).catch(error => {
+          console.log('custom error handler', error)
+          showNotification(error.response.data.error, 'red')
+        })
     }
   }
 
