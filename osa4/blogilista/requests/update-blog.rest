@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/5d5121289d5d632d3884c739 HTTP/1.1
+content-type: application/json
+
+{
+    "title": "test blog 668",
+    "author": "Kauko Putki 668",
+    "url": "www.blog668.com",
+    "likes": 668
+}
