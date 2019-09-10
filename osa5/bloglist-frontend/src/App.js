@@ -3,6 +3,7 @@ import loginService from './services/login'
 import blogService from './services/blogs'
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
+import { useField } from './hooks'
 
 const Notification = ({ data }) => {
   if (data === null) {
@@ -29,9 +30,9 @@ const Notification = ({ data }) => {
 }
 
 const CreateNewBlog = ({ addBlog, showNotification, hideForm }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
 
   const handleCreate = async (event) => {
     event.preventDefault()
@@ -39,17 +40,17 @@ const CreateNewBlog = ({ addBlog, showNotification, hideForm }) => {
       hideForm()
 
       const blog = {
-        title,
-        author,
-        url
+        title: title.form.value,
+        author: author.form.value,
+        url: url.form.value
       }
 
       addBlog(await blogService.create(blog))
 
       showNotification('blog created', 'green')
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      title.reset()
+      author.reset()
+      url.reset()
     } catch (exception) {
       console.error(exception)
       showNotification('blog cration failed', 'red')
@@ -62,30 +63,15 @@ const CreateNewBlog = ({ addBlog, showNotification, hideForm }) => {
       <form onSubmit={handleCreate}>
         <div>
           title
-            <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
+            <input {...title.form} />
         </div>
         <div>
           author
-            <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+            <input {...author.form} />
         </div>
         <div>
           url
-            <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
+            <input {...url.form} />
         </div>
         <button type="submit">create</button>
       </form>
@@ -95,8 +81,8 @@ const CreateNewBlog = ({ addBlog, showNotification, hideForm }) => {
 }
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('password')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [notificationData, setNotificationData] = useState(null)
@@ -144,12 +130,12 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password,
+        username: username.form.value, password: password.form.value,
       })
 
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
 
       window.localStorage.setItem(
         'user', JSON.stringify(user)
@@ -172,21 +158,11 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
+            <input {...username.form} />
           </div>
           <div>
             password
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
+            <input {...password.form} />
           </div>
           <button type="submit">login</button>
         </form>
