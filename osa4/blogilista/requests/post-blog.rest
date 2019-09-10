@@ -3,8 +3,8 @@ content-type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImthdWtvcHV0a2kiLCJpZCI6IjVkNjE1YTEzZWMyY2Y1NDI5Yjk3OTIxNyIsImlhdCI6MTU2NjY2MTI0OH0.1UQb8IPL9w6bPpodkFf0LpNjjClugZc_X2h3SLqOauA
 
 {
-    "title": "test blog 117",
-    "author": "Kauko Putki 117",
-    "url": "www.blog117.com",
-    "likes": 117
+    "title": "test blog 121",
+    "author": "Kauko Putki 121",
+    "url": "www.blog121.com",
+    "likes": 118
 }
