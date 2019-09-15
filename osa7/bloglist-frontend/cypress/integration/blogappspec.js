@@ -1,0 +1,22 @@
+it('user can login', function () {
+  cy.visit('http://localhost:3000')
+  cy.get('input:first')
+    .type('kaukoputki')
+  cy.get('input:last')
+    .type('foobar')
+  cy.contains('login')
+    .click()
+  cy.contains('Kauko Putki')
+})
+
+it('blog can be clicked', function () {
+  cy.visit('http://localhost:3000')
+  cy.get('input:first')
+    .type('kaukoputki')
+  cy.get('input:last')
+    .type('foobar')
+  cy.contains('login')
+    .click()
+  cy.contains('Kauko Putki 118').click()
+  cy.contains('added by Kauko Putki')
+})  
