@@ -1,0 +1,20 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "Library backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Mika",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.9.3",
+    "graphql": "^14.5.6",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.7.1",
+    "mongoose-unique-validator": "^2.0.3",
+    "uuid": "^3.3.3"
+  }
+}
